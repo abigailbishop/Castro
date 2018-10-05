@@ -10,6 +10,7 @@ import yt
 import sys
 import numpy as np
 from cycler import cycler
+import os
 
 ## Define RGBA to HEX
 def rgba_to_hex(rgba):
@@ -35,13 +36,19 @@ def get_Te_profile(plotfile):
     return time, x_coord, temp, enuc
 
 
-def doit(pprefix, nums, skip, limitlabels):
+def doit(pprefix, nums, skip, limitlabels, movie):
 
-    f = plt.figure()
+    f = plt.figure(1)
     f.set_size_inches(7.0, 9.0)
+    g = plt.figure(2)
+    g.set_size_inches(7.0, 5.0)
 
     ax_T = f.add_subplot(211)
     ax_e = f.add_subplot(212)
+    ax_movie = g.add_subplot(111)
+
+    if movie == 1:
+        os.mkdir('./%s_frames' % pprefix)
 
     # Get set of colors to use and apply to plot
     numplots = int( len(nums) / skip )
@@ -50,6 +57,7 @@ def doit(pprefix, nums, skip, limitlabels):
     hexclist = [rgba_to_hex(ci) for ci in clist]
     ax_T.set_prop_cycle(cycler('color', hexclist))
     ax_e.set_prop_cycle(cycler('color', hexclist))
+    ax_movie.set_prop_cycle(cycler('color', hexclist))
     
     if limitlabels > 1:
         skiplabels = int( numplots / limitlabels )
@@ -73,6 +81,14 @@ def doit(pprefix, nums, skip, limitlabels):
 
         ax_e.plot(x, enuc)
 
+        if movie == 1 :
+            ax_movie.plot(x, T, label="t = {:6.4g} s".format(time))
+            ax_movie.legend(frameon=False, loc = 1)
+            ax_movie.set_ylim([0,6e9])
+            g.savefig('./%s_frames/flame_%s_%s.png' % 
+                    (pprefix, pprefix, n))
+            ax_movie.cla()
+
         index = index + 1
         
     ax_T.legend(frameon=False)
@@ -95,10 +111,12 @@ if __name__ == "__main__":
                    help="list of plotfiles to plot")
     p.add_argument("--limitlabels", type=float, default=1.,
                    help="Show all labels (default) or reduce to ~ given value")
+    p.add_argument("--moviemaker", type=int, default=0,
+                   help="Outputs every time step as a png to make a movie.")
 
     args = p.parse_args()
 
     prefix = args.plotfiles[0].split("plt")[0] + "plt"
     plot_nums = sorted([p.split("plt")[1] for p in args.plotfiles], key=int)
 
-    doit(prefix, plot_nums, args.skip, args.limitlabels)
+    doit(prefix, plot_nums, args.skip, args.limitlabels, args.moviemaker)
