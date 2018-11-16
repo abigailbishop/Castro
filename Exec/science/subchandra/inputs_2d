@@ -14,7 +14,7 @@ geometry.prob_hi   =  7.4e8 1.48e9
 
 amr.n_cell         = 128 256
 
-amr.max_level      = 2       # maximum level number allowed
+amr.max_level      = 4       # maximum level number allowed
 
 castro.lo_bc       =  3 2
 castro.hi_bc       =  2 2
@@ -48,14 +48,17 @@ castro.init_shrink    = 0.1     # scale back initial timestep by this factor
 castro.change_max     = 1.05    # factor by which dt is allowed to change each timestep
 castro.sum_interval   = 0       # timesteps between computing and printing volume averages
 
+castro.dtnuc_e = 0.25
+castro.dtnuc_X = 0.25
+
 amr.ref_ratio       = 2 2 2 2 # refinement ratio
 amr.regrid_int      = 10000   # how often to regrid
 amr.n_error_buf     = 0 0 0 0 # number of buffer cells in error est
 amr.grid_eff        = 0.7     # what constitutes an efficient grid
 
-amr.check_file      = chk     # root name of checkpoint file
+amr.check_file      = subch_chk     # root name of checkpoint file
 amr.check_int       = 500     # number of timesteps between checkpoints
-amr.plot_file       = plt     # root name of plot file
+amr.plot_file       = subch_plt     # root name of plot file
 amr.plot_int        = 50     # number of timesteps between plotfiles
 
 amr.max_grid_size   = 128       # maximum grid size allowed -- used to control parallelism
