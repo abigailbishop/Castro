@@ -27,13 +27,16 @@ def get_T_profile(plotfile):
     return time, x_coord, temp
 
 
-def find_x_for_T(x, T, T_0=3.e9):
+def find_x_for_T(x, T, T_0=1.5e9):
     """ given a profile x(T), find the x_0 that corresponds to T_0 """
     
     # our strategy here assumes that the hot ash is in the early part
     # of the profile.  We then find the index of the first point where
     # T drops below T_0
-    idx = np.where(T < T_0)[0][0]
+    try:
+        idx = np.where(T < T_0)[0][0]
+    except IndexError:
+        return None
     
     T1 = T[idx-1]
     x1 = x[idx-1]
@@ -80,6 +83,9 @@ if __name__ == "__main__":
 
         time, x, T = get_T_profile(pfile)
         xpos = find_x_for_T(x, T)
+        if xpos is None:
+            break
+
         width = find_flame_width(x, T)
 
         if xpos_old is not None:

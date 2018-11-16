@@ -31,7 +31,7 @@ subroutine amrex_probinit (init,name,namlen,problo,probhi) bind(c)
   end do
 
   ! set namelist defaults
-  R_pert = 4.4e8
+  R_pert = 3.6e8
   pert_temp_factor = 10.0
   pert_rad_factor = 2.0
 
