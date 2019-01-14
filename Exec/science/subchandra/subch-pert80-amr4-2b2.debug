@@ -1,0 +1,251 @@
+MPI initialized with 24 MPI processes
+
+Starting run at 19:50:19 UTC on 2019-01-14.
+Successfully read inputs file ... 
+
+Castro git describe: 18.04-594-g7ebd97a7-dirty
+AMReX git describe: 18.11
+Microphysics git describe: 18.11
+
+reading extern runtime parameters ...
+FORTRAN:Warning:: small_dens has not been set, defaulting to 1.e-200_rt.!
+FORTRAN:Warning:: small_temp has not been set, defaulting to 1.e-200_rt.!
+ 
+ Initializing Helmholtz EOS and using Coulomb corrections.
+ 
+FORTRAN:EOS: small_temp cannot be less than the mintemp allowed by the EOS. Resetting small_temp to mintemp.!
+FORTRAN:EOS: small_dens cannot be less than the mindens allowed by the EOS. Resetting small_dens to mindens.!
+
+Time in ca_set_method_params: 3.404642105
+11 Species: 
+h1  he4  c12  c14  n13  n14  o16  o18  f18  ne20  ne21  
+0 Auxiliary Variables: 
+
+restarting calculation from file: ./subchtest_chk01100
+Starting to call amrex_probinit ... 
+                                                            
+------------------------------------------------------------------------------
+ reading initial model
+        2560 points found in the initial model file
+           7  variables found in the initial model file
+ WARNING: variable not found: iron-56
+ WARNING: hydrogen-1 not provided in inputs file
+ WARNING: carbon-14 not provided in inputs file
+ WARNING: nitrogen-13 not provided in inputs file
+ WARNING: nitrogen-14 not provided in inputs file
+ WARNING: oxygen-18 not provided in inputs file
+ WARNING: fluorine-18 not provided in inputs file
+ WARNING: neon-20 not provided in inputs file
+ WARNING: neon-21 not provided in inputs file
+Successfully run amrex_probinit
+Successfully read inputs file ... 
+read CPU time: 26203484.32
+Restart time = 4.11890498 seconds.
+[Level 0 step 1101] ADVANCE with dt = 2.4416147e-07
+[Level 0 step 1101] Advanced 32768 cells
+[Level 1 step 2201] ADVANCE with dt = 1.22080735e-07
+[Level 1 step 2201] Advanced 100352 cells
+[Level 2 step 4401] ADVANCE with dt = 6.104036749e-08
+[Level 2 step 4401] Advanced 307200 cells
+[Level 3 step 8801] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8801] Advanced 1036288 cells
+[Level 4 step 17601] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17601] Advanced 1355776 cells
+[Level 4 step 17602] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17602] Advanced 1355776 cells
+[Level 3 step 8802] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8802] Advanced 1036288 cells
+[Level 4 step 17603] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17603] Advanced 1355776 cells
+[Level 4 step 17604] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17604] Advanced 1355776 cells
+[Level 2 step 4402] ADVANCE with dt = 6.104036749e-08
+[Level 2 step 4402] Advanced 307200 cells
+[Level 3 step 8803] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8803] Advanced 1036288 cells
+[Level 4 step 17605] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17605] Advanced 1355776 cells
+[Level 4 step 17606] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17606] Advanced 1355776 cells
+[Level 3 step 8804] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8804] Advanced 1036288 cells
+[Level 4 step 17607] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17607] Advanced 1355776 cells
+[Level 4 step 17608] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17608] Advanced 1355776 cells
+[Level 1 step 2202] ADVANCE with dt = 1.22080735e-07
+[Level 1 step 2202] Advanced 100352 cells
+[Level 2 step 4403] ADVANCE with dt = 6.104036749e-08
+[Level 2 step 4403] Advanced 307200 cells
+[Level 3 step 8805] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8805] Advanced 1036288 cells
+[Level 4 step 17609] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17609] Advanced 1355776 cells
+[Level 4 step 17610] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17610] Advanced 1355776 cells
+[Level 3 step 8806] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8806] Advanced 1036288 cells
+[Level 4 step 17611] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17611] Advanced 1355776 cells
+[Level 4 step 17612] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17612] Advanced 1355776 cells
+[Level 2 step 4404] ADVANCE with dt = 6.104036749e-08
+[Level 2 step 4404] Advanced 307200 cells
+[Level 3 step 8807] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8807] Advanced 1036288 cells
+[Level 4 step 17613] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17613] Advanced 1355776 cells
+[Level 4 step 17614] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17614] Advanced 1355776 cells
+[Level 3 step 8808] ADVANCE with dt = 3.052018375e-08
+[Level 3 step 8808] Advanced 1036288 cells
+[Level 4 step 17615] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17615] Advanced 1355776 cells
+[Level 4 step 17616] ADVANCE with dt = 1.526009187e-08
+[Level 4 step 17616] Advanced 1355776 cells
+
+[STEP 1101] Coarse TimeStep time: 303.9621418
+[STEP 1101] FAB kilobyte spread across MPI nodes: [209341 ... 254859]
+
+STEP = 1101 TIME = 0.0003425151678 DT = 2.4416147e-07
+
+[Level 0 step 1102] ADVANCE with dt = 2.441245597e-07
+[Level 0 step 1102] Advanced 32768 cells
+[Level 1 step 2203] ADVANCE with dt = 1.220622799e-07
+[Level 1 step 2203] Advanced 100352 cells
+[Level 2 step 4405] ADVANCE with dt = 6.103113993e-08
+[Level 2 step 4405] Advanced 307200 cells
+[Level 3 step 8809] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8809] Advanced 1036288 cells
+[Level 4 step 17617] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17617] Advanced 1355776 cells
+[Level 4 step 17618] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17618] Advanced 1355776 cells
+[Level 3 step 8810] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8810] Advanced 1036288 cells
+[Level 4 step 17619] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17619] Advanced 1355776 cells
+[Level 4 step 17620] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17620] Advanced 1355776 cells
+[Level 2 step 4406] ADVANCE with dt = 6.103113993e-08
+[Level 2 step 4406] Advanced 307200 cells
+[Level 3 step 8811] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8811] Advanced 1036288 cells
+[Level 4 step 17621] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17621] Advanced 1355776 cells
+[Level 4 step 17622] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17622] Advanced 1355776 cells
+[Level 3 step 8812] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8812] Advanced 1036288 cells
+[Level 4 step 17623] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17623] Advanced 1355776 cells
+[Level 4 step 17624] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17624] Advanced 1355776 cells
+[Level 1 step 2204] ADVANCE with dt = 1.220622799e-07
+[Level 1 step 2204] Advanced 100352 cells
+[Level 2 step 4407] ADVANCE with dt = 6.103113993e-08
+[Level 2 step 4407] Advanced 307200 cells
+[Level 3 step 8813] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8813] Advanced 1036288 cells
+[Level 4 step 17625] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17625] Advanced 1355776 cells
+[Level 4 step 17626] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17626] Advanced 1355776 cells
+[Level 3 step 8814] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8814] Advanced 1036288 cells
+[Level 4 step 17627] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17627] Advanced 1355776 cells
+[Level 4 step 17628] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17628] Advanced 1355776 cells
+[Level 2 step 4408] ADVANCE with dt = 6.103113993e-08
+[Level 2 step 4408] Advanced 307200 cells
+[Level 3 step 8815] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8815] Advanced 1036288 cells
+[Level 4 step 17629] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17629] Advanced 1355776 cells
+[Level 4 step 17630] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17630] Advanced 1355776 cells
+[Level 3 step 8816] ADVANCE with dt = 3.051556996e-08
+[Level 3 step 8816] Advanced 1036288 cells
+[Level 4 step 17631] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17631] Advanced 1355776 cells
+[Level 4 step 17632] ADVANCE with dt = 1.525778498e-08
+[Level 4 step 17632] Advanced 1355776 cells
+
+[STEP 1102] Coarse TimeStep time: 303.5335965
+[STEP 1102] FAB kilobyte spread across MPI nodes: [209341 ... 254859]
+
+STEP = 1102 TIME = 0.0003427592924 DT = 2.441245597e-07
+
+[Level 0 step 1103] ADVANCE with dt = 2.440877178e-07
+[Level 0 step 1103] Advanced 32768 cells
+[Level 1 step 2205] ADVANCE with dt = 1.220438589e-07
+[Level 1 step 2205] Advanced 100352 cells
+[Level 2 step 4409] ADVANCE with dt = 6.102192945e-08
+[Level 2 step 4409] Advanced 307200 cells
+[Level 3 step 8817] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8817] Advanced 1036288 cells
+[Level 4 step 17633] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17633] Advanced 1355776 cells
+[Level 4 step 17634] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17634] Advanced 1355776 cells
+[Level 3 step 8818] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8818] Advanced 1036288 cells
+[Level 4 step 17635] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17635] Advanced 1355776 cells
+[Level 4 step 17636] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17636] Advanced 1355776 cells
+[Level 2 step 4410] ADVANCE with dt = 6.102192945e-08
+[Level 2 step 4410] Advanced 307200 cells
+[Level 3 step 8819] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8819] Advanced 1036288 cells
+[Level 4 step 17637] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17637] Advanced 1355776 cells
+[Level 4 step 17638] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17638] Advanced 1355776 cells
+[Level 3 step 8820] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8820] Advanced 1036288 cells
+[Level 4 step 17639] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17639] Advanced 1355776 cells
+[Level 4 step 17640] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17640] Advanced 1355776 cells
+[Level 1 step 2206] ADVANCE with dt = 1.220438589e-07
+[Level 1 step 2206] Advanced 100352 cells
+[Level 2 step 4411] ADVANCE with dt = 6.102192945e-08
+[Level 2 step 4411] Advanced 307200 cells
+[Level 3 step 8821] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8821] Advanced 1036288 cells
+[Level 4 step 17641] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17641] Advanced 1355776 cells
+[Level 4 step 17642] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17642] Advanced 1355776 cells
+[Level 3 step 8822] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8822] Advanced 1036288 cells
+[Level 4 step 17643] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17643] Advanced 1355776 cells
+[Level 4 step 17644] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17644] Advanced 1355776 cells
+[Level 2 step 4412] ADVANCE with dt = 6.102192945e-08
+[Level 2 step 4412] Advanced 307200 cells
+[Level 3 step 8823] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8823] Advanced 1036288 cells
+[Level 4 step 17645] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17645] Advanced 1355776 cells
+[Level 4 step 17646] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17646] Advanced 1355776 cells
+[Level 3 step 8824] ADVANCE with dt = 3.051096472e-08
+[Level 3 step 8824] Advanced 1036288 cells
+[Level 4 step 17647] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17647] Advanced 1355776 cells
+[Level 4 step 17648] ADVANCE with dt = 1.525548236e-08
+[Level 4 step 17648] Advanced 1355776 cells
+
+[STEP 1103] Coarse TimeStep time: 303.3414845
+[STEP 1103] FAB kilobyte spread across MPI nodes: [209341 ... 254859]
+
+STEP = 1103 TIME = 0.0003430033801 DT = 2.440877178e-07
+
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 12000559.0 ON nid00004 CANCELLED AT 2019-01-14T12:05:38 DUE TO TIME LIMIT ***
+srun: got SIGCONT
+srun: forcing job termination

@@ -7,7 +7,7 @@ DEBUG      = FALSE
 
 DIM        = 2
 
-COMP	   = gnu
+COMP	   = GNU
 
 USE_MPI    = TRUE
 
