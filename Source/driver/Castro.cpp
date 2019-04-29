@@ -1032,7 +1032,7 @@ Castro::initData ()
 
 #ifdef GPU_COMPATIBLE_PROBLEM
 
-#pragma gpu
+#pragma gpu box(box)
           ca_initdata(AMREX_INT_ANYD(lo), AMREX_INT_ANYD(hi),
                       BL_TO_FORTRAN_ANYD(S_new[mfi]),
                       AMREX_REAL_ANYD(dx), AMREX_REAL_ANYD(prob_lo));
@@ -1054,13 +1054,6 @@ Castro::initData ()
   	   gridloc.lo(), gridloc.hi());
 
 #endif
-
-	  // Generate the initial hybrid momenta based on this user data.
-
-#ifdef HYBRID_MOMENTUM
-	  ca_init_hybrid_momentum(lo, hi, BL_TO_FORTRAN_ANYD(S_new[mfi]));
-#endif
-
        }
 
 #ifdef AMREX_USE_CUDA
@@ -1071,11 +1064,24 @@ Castro::initData ()
 #endif
 #endif
 
+#ifdef HYBRID_MOMENTUM
+       // Generate the initial hybrid momenta based on this user data.
+
+       for (MFIter mfi(S_new); mfi.isValid(); ++mfi) {
+           const Box& box = mfi.validbox();
+           const int* lo  = box.loVect();
+           const int* hi  = box.hiVect();
+
+#pragma gpu box(box)
+           ca_init_hybrid_momentum(AMREX_INT_ANYD(lo), AMREX_INT_ANYD(hi), BL_TO_FORTRAN_ANYD(S_new[mfi]));
+       }
+#endif
+
        // Verify that the sum of (rho X)_i = rho at every cell
 
        for (MFIter mfi(S_new); mfi.isValid(); ++mfi) {
            const Box& bx = mfi.validbox();
-#pragma gpu
+#pragma gpu box(bx)
            ca_check_initial_species(AMREX_INT_ANYD(bx.loVect()), AMREX_INT_ANYD(bx.hiVect()),
                                     BL_TO_FORTRAN_ANYD(S_new[mfi]));
        }
@@ -1353,7 +1359,7 @@ Castro::estTimeStep (Real dt_old)
                 {
                     const Box& box = mfi.tilebox();
 
-#pragma gpu
+#pragma gpu box(box)
                     ca_estdt(AMREX_INT_ANYD(box.loVect()), AMREX_INT_ANYD(box.hiVect()),
                              BL_TO_FORTRAN_ANYD(stateMF[mfi]),
                              AMREX_REAL_ANYD(dx),
@@ -1400,7 +1406,7 @@ Castro::estTimeStep (Real dt_old)
             {
                 const Box& box = mfi.tilebox();
 
-#pragma gpu
+#pragma gpu box(box)
                 ca_estdt_temp_diffusion(AMREX_INT_ANYD(box.loVect()), AMREX_INT_ANYD(box.hiVect()),
                                         BL_TO_FORTRAN_ANYD(stateMF[mfi]),
                                         AMREX_REAL_ANYD(dx), AMREX_MFITER_REDUCE_MIN(&dt));
@@ -2691,6 +2697,8 @@ Castro::reflux(int crse_level, int fine_level)
 	    Real dt_advance = getLevel(lev).dt_advance; // Note that this may be shorter than the full timestep due to subcycling.
             Real dt_amr = parent->dtLevel(lev); // The full timestep expected by the Amr class.
 
+            ca_set_amr_info(lev, -1, -1, time, dt_advance);
+
             if (getLevel(lev).apply_sources()) {
 
                 getLevel(lev).apply_source_to_state(S_new, source, -dt_advance, 0);
@@ -2834,7 +2842,7 @@ Castro::normalize_species (MultiFab& S_new, int ng)
     {
        const Box& bx = mfi.growntilebox(ng);
 
-#pragma gpu
+#pragma gpu box(bx)
        ca_normalize_species(AMREX_INT_ANYD(bx.loVect()), AMREX_INT_ANYD(bx.hiVect()),
                             BL_TO_FORTRAN_ANYD(S_new[mfi]));
     }
@@ -2855,7 +2863,7 @@ Castro::enforce_consistent_e (MultiFab& S)
         const int* lo      = box.loVect();
         const int* hi      = box.hiVect();
 
-#pragma gpu
+#pragma gpu box(box)
         ca_enforce_consistent_e(AMREX_INT_ANYD(lo), AMREX_INT_ANYD(hi), BL_TO_FORTRAN_ANYD(S[mfi]));
     }
 }
@@ -3270,7 +3278,7 @@ Castro::reset_internal_energy(MultiFab& S_new, int ng)
     {
         const Box& bx = mfi.growntilebox(ng);
 
-#pragma gpu
+#pragma gpu box(bx)
         ca_reset_internal_e(AMREX_INT_ANYD(bx.loVect()), AMREX_INT_ANYD(bx.hiVect()),
 			    BL_TO_FORTRAN_ANYD(S_new[mfi]),
 			    print_fortran_warnings);
@@ -3367,7 +3375,11 @@ Castro::computeTemp(MultiFab& State, Real time, int ng)
   }
 
   if (mol_order == 4 || sdc_order == 4) {
-    reset_internal_energy(Stemp, ng);
+    // we need to enforce minimum density here, since the conversion
+    // from cell-average to centers could have made rho < 0 near steep
+    // gradients
+    enforce_min_density(Stemp, Stemp.nGrow());
+    reset_internal_energy(Stemp, Stemp.nGrow());
   } else {
     reset_internal_energy(State, ng);
   }
@@ -3410,7 +3422,7 @@ Castro::computeTemp(MultiFab& State, Real time, int ng)
           ca_compute_temp(AMREX_ARLIM_ANYD(bx.loVect()), AMREX_ARLIM_ANYD(bx.hiVect()),
                           BL_TO_FORTRAN_ANYD(Stemp[mfi]));
         } else {
-#pragma gpu
+#pragma gpu box(bx)
           ca_compute_temp(AMREX_INT_ANYD(bx.loVect()), AMREX_INT_ANYD(bx.hiVect()),
                           BL_TO_FORTRAN_ANYD(State[mfi]));
         }
