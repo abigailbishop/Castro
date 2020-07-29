@@ -16,10 +16,12 @@ void Print_Help() {
 	Print() << "\nPrint out the radiation quantities at a specified distance from"
 	        << "\nthe origin.  This is written for the 1-d radiating sphere problem."
 	        << "\n"
-	        << "\n./fradsphere -p plotfile -r radius -g groupfile"
+	        << "\n./fradsphere -p plotfile -r radius -g groupfile -v variable"
 	        << "\n"
 	        << "\nHere groupfile is the file containing the group structure information"
 	        << "\nas output by Castro (usually group_structure.dat)."
+                << "\nvariable should be either rad or rad_analytic_ (to obtain the numerical"
+                << "\nand analytic data, respectively.)"
 	        << "\n\n" << std::endl;
 }
 
@@ -34,7 +36,7 @@ int main(int argc, char* argv[])
 		Abort("ERROR: rad_sphere diagnostic only works for DIM=1");
 
 	// Input arguments
-	string pltfile, groupfile;
+	string pltfile, groupfile, variable;
 	Real radius = 0.;
 	int j = 1;         // skip program name
 
@@ -53,6 +55,10 @@ int main(int argc, char* argv[])
 		{
 			radius = std::atof(argv[++j]);
 		}
+                else if ( !strcmp(argv[j], "-v") || !strcmp(argv[j],"--variable") )
+                {
+                    variable = argv[++j];
+                }
 		else
 		{
 			std::cout << "\n\nOption " << argv[j] << " not recognized" << std::endl;
@@ -73,6 +79,7 @@ int main(int argc, char* argv[])
 	Print() << "\nplotfile  = \"" << pltfile << "\"" << std::endl;
 	Print() << "groupfile = \"" << groupfile << "\"" << std::endl;
 	Print() << "radius = " << radius << std::endl;
+        Print() << "variable = " << variable << std::endl;
 	Print() << std::endl;
 
 	// Start dataservices
@@ -112,7 +119,7 @@ int main(int argc, char* argv[])
 	int nbins = domain.length(0);
 
 	// find variable indices
-	Vector<std::string> compVarNames = {"rad0"};
+	Vector<std::string> compVarNames = {variable + "0"};
 
 	auto varComps = GetComponents(data, compVarNames);
 	auto rad_comp = varComps[0];
@@ -175,6 +182,8 @@ int main(int argc, char* argv[])
 
 	auto isv = sort_indexes(coords);
 
+    Print() << "coords_min = " << coords[0] << " coords_max = " << coords[cnt-1] << std::endl;
+
 	// open the group file and read in the group information
 	std::ifstream group_file;
 	group_file.open(groupfile);
@@ -222,9 +231,10 @@ int main(int argc, char* argv[])
 	auto idx_obs = -1;
 
 	for (auto i = 0; i < cnt; i++) {
-		if (radius >= vars_bin[isv[i]*(data.NComp()+1)] && radius < vars_bin[isv[i+1]*(data.NComp()+1)])
+		if (radius >= vars_bin[isv[i]] && radius < vars_bin[isv[i+1]]) {
 			idx_obs = i;
-		break;
+		    break;
+        }
 	}
 
 	if (idx_obs == -1) Abort("ERROR: radius not found in domain");
@@ -238,15 +248,15 @@ int main(int argc, char* argv[])
 	slicefile.precision(12);
 
 	slicefile << std::setw(15) << "# group name"
-	        << std::setw(w) << "group center energy"
-	        << std::setw(w) << "E_rad(nu)*dnu (erg/cm^3)"
-	        << std::setw(w) << "E_rad(nu) (erg/cm^3/Hz)" << std::endl;
+	          << std::setw(w) << "group center energy"
+	          << std::setw(w) << "E_rad(nu)*dnu (erg/cm^3)"
+	          << std::setw(w) << "E_rad(nu) (erg/cm^3/Hz)" << std::endl;
 
 	for (auto i = 0; i < ngroups; i++) {
 		slicefile << std::setw(15) << varNames[rad_comp+i]
-		        << std::setw(w) << nu_groups[i]
-		        << std::setw(w) << vars_bin[isv[idx_obs] + (rad_comp+i+1)*nbins]
-		        << std::setw(w) << vars_bin[isv[idx_obs] + (rad_comp+i+1)*nbins] / dnu_groups[i] << std::endl;
+		          << std::setw(w) << nu_groups[i]
+		          << std::setw(w) << vars_bin[isv[idx_obs] + (rad_comp+i+1) * nbins]
+		          << std::setw(w) << vars_bin[isv[idx_obs] + (rad_comp+i+1) * nbins] / dnu_groups[i] << std::endl;
 	}
 
 	slicefile.close();

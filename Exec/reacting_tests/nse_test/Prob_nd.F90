@@ -1,12 +1,10 @@
-subroutine amrex_probinit (init,name,namlen,problo,probhi) bind(c)
+subroutine amrex_probinit(init, name, namlen, problo, probhi) bind(c)
 
   use amrex_constants_module
-  use probdata_module, only: T_min, T_max, rho_ambient, width, xn, fortin, cfrac, ofrac
+  use probdata_module, only: T_min, T_max, rho_ambient, width, xn, cfrac, ofrac
   use network, only: network_species_index, nspec
-  use amrex_error_module, only: amrex_error
+  use castro_error_module, only: castro_error
   use amrex_fort_module, only: rt => amrex_real
-  use eos_type_module, only: eos_t, eos_input_rt
-  use eos_module, only: eos
   use prob_params_module, only : center
 
   implicit none
@@ -15,41 +13,11 @@ subroutine amrex_probinit (init,name,namlen,problo,probhi) bind(c)
   integer,  intent(in) :: name(namlen)
   real(rt), intent(in) :: problo(3), probhi(3)
 
-  type(eos_t) :: eos_state
-
-  integer :: untin,i
-
   integer, save :: ihe4, ic12, io16
-
-  ! Build "probin" filename -- the name of file containing fortin namelist.
-
-  integer, parameter :: maxlen = 256
-  character :: probin*(maxlen)
 
   real(rt) :: smallx
 
-  if (namlen .gt. maxlen) call amrex_error("probin file name too long")
-
-  do i = 1, namlen
-     probin(i:i) = char(name(i))
-  end do
-
-  ! Set namelist defaults
-
-  T_min = 6.e9_rt
-  T_max = 8.e9_rt
-  rho_ambient = 1.e7_rt
-  width = 5.e4_rt
-
-  smallx = 1.e-12_rt
-
-  cfrac = 0.5e0_rt
-  ofrac = 0.0e0_rt
-
-  ! Read namelists
-  open(newunit=untin, file=probin(1:namlen), form='formatted', status='old')
-  read(untin, fortin)
-  close(unit=untin)
+  call probdata_init(name, namlen)
 
   ! get the species indices
   ihe4 = network_species_index("helium-4")
@@ -57,22 +25,22 @@ subroutine amrex_probinit (init,name,namlen,problo,probhi) bind(c)
   io16 = network_species_index("oxygen-16")
 
   if (ihe4 < 0 .or. ic12 < 0 .or. io16 < 0) then
-     call amrex_error("ERROR: species indices not found")
+     call castro_error("ERROR: species indices not found")
   endif
 
   ! make sure that the carbon fraction falls between 0 and 1
   if (cfrac > 1.e0_rt .or. cfrac < 0.e0_rt) then
-     call amrex_error("ERROR: cfrac must fall between 0 and 1")
+     call castro_error("ERROR: cfrac must fall between 0 and 1")
   endif
 
   ! make sure that the oxygen fraction falls between 0 and 1
   if (ofrac > 1.e0_rt .or. cfrac < 0.e0_rt) then
-     call amrex_error("ERROR: ofrac must fall between 0 and 1")
+     call castro_error("ERROR: ofrac must fall between 0 and 1")
   endif
 
   ! make sure that the C/O fraction sums to no more than 1
   if (cfrac + ofrac > 1.e0_rt) then
-     call amrex_error("ERROR: cfrac + ofrac cannot exceed 1.")
+     call castro_error("ERROR: cfrac + ofrac cannot exceed 1.")
   end if
 
   ! set the default mass fractions
@@ -139,13 +107,13 @@ subroutine ca_initdata(level,time,lo,hi,nscal, &
   real(rt) :: T
 
   do k = lo(3), hi(3)
-     zcen = xlo(3) + delta(3)*(dble(k-lo(3)) + HALF) - center(3)
+     zcen = problo(3) + delta(3)*(dble(k) + HALF) - center(3)
 
      do j = lo(2), hi(2)
-        xcen = xlo(2) + delta(2)*(dble(j-lo(2)) + HALF) - center(2)
+        xcen = problo(2) + delta(2)*(dble(j) + HALF) - center(2)
 
         do i = lo(1), hi(1)
-           xcen = xlo(1) + delta(1)*(dble(i-lo(1)) + HALF) - center(1)
+           xcen = problo(1) + delta(1)*(dble(i) + HALF) - center(1)
 
            r = sqrt(xcen**2 + ycen**2 + zcen**2)
 

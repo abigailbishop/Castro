@@ -1,5 +1,5 @@
-#ifndef _HypreABec_H_
-#define _HypreABec_H_
+#ifndef CASTRO_HYPREABEC_H
+#define CASTRO_HYPREABEC_H
 
 #include <AMReX_Array.H>
 #include <AMReX_MultiFab.H>
@@ -27,9 +27,9 @@ class HypreABec {
 /// @param solver_flag
 ///
   HypreABec(const amrex::BoxArray& grids,
-	    const amrex::DistributionMapping& dmap,
-	    const amrex::Geometry& geom,
-	    int solver_flag = 0);
+            const amrex::DistributionMapping& dmap,
+            const amrex::Geometry& geom,
+            int solver_flag = 0);
 
   ~HypreABec();
 
@@ -126,14 +126,6 @@ class HypreABec {
 ///
   void boundaryFlux(amrex::MultiFab* Flux, amrex::MultiFab& Er, int icomp, BC_Mode inhom);
 
-
-///
-/// @param product
-/// @param vector
-/// @param icomp
-/// @param inhom
-///
-  void apply(amrex::MultiFab& product, amrex::MultiFab& vector, int icomp, BC_Mode inhom);
 
 ///
 /// Three steps separated so that multiple calls to solve can be made

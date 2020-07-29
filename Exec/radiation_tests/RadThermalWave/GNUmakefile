@@ -8,9 +8,6 @@ DEBUG      = FALSE
 PROFILE    = FALSE
 
 USE_RAD = TRUE
-USE_NEUTRINO = FALSE
-
-DIMENSION_AGNOSTIC = TRUE
 
 CASTRO_HOME = ../../..
 
@@ -19,7 +16,9 @@ EOS_DIR     := gamma_law
 NETWORK_DIR := general_null
 NETWORK_INPUTS := gammalaw.net
 
-Opacity_dir := null
+Opacity_dir := rad_power_law
+
+GPU_COMPATIBLE_PROBLEM = TRUE
 
 Bpack   := ./Make.package
 Blocs   := .

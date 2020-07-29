@@ -15,23 +15,15 @@ USE_REACT = TRUE
 USE_ROTATION = TRUE
 USE_DIFFUSION = TRUE
 
+USE_PROB_PARAMS = TRUE
+
 CASTRO_HOME = ../../..
 
-DIMENSION_AGNOSTIC = TRUE
+# This sets the EOS directory in $(MICROPHYSICS_HOME)/eos
+EOS_DIR     := gamma_law_general
 
-ifdef MICROPHYSICS_HOME
-
-  # This sets the EOS directory in $(MICROPHYSICS_HOME)/eos
-  EOS_DIR     := gamma_law_general
-
-  # This sets the network directory in $(MICROPHYSICS_HOME)/networks
-  NETWORK_DIR := powerlaw
-
-else
-
-  $(error Error: This problem requires the Microphysics repository. Please ensure that you have downloaded it and set $$MICROPHYSICS_HOME appropriately)
-
-endif
+# This sets the network directory in $(MICROPHYSICS_HOME)/networks
+NETWORK_DIR := powerlaw
 
 CONDUCTIVITY_DIR := constant
 

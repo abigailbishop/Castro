@@ -1,8 +1,13 @@
-#ifndef _Gravity_H_
-#define _Gravity_H_
+#ifndef GRAVITY_H
+#define GRAVITY_H
 
 #include <AMReX_AmrLevel.H>
 #include <AMReX_MLLinOp.H>
+
+#include "gravity_params.H"
+
+// This vector can be accessed on the GPU.
+using RealVector = amrex::Gpu::ManagedVector<amrex::Real>;
 
 ///
 /// @class Gravity
@@ -156,9 +161,9 @@ public:
 /// @param is_new       do we use state data at current time (1) or old time (0)?
 ///
   void solve_for_phi (int               level,
-		      amrex::MultiFab&         phi,
+                      amrex::MultiFab&         phi,
                       const amrex::Vector<amrex::MultiFab*>& grad_phi,
-		      int               is_new);
+                      int               is_new);
 
 ///
 /// Find delta phi
@@ -184,7 +189,7 @@ public:
 /// @param dphi
 ///
   void gravity_sync (int crse_level, int fine_level,
-		     const amrex::Vector<amrex::MultiFab*>& drho, const amrex::Vector<amrex::MultiFab*>& dphi);
+                     const amrex::Vector<amrex::MultiFab*>& drho, const amrex::Vector<amrex::MultiFab*>& dphi);
 
 
 ///
@@ -208,18 +213,8 @@ public:
 ///
   void actual_multilevel_solve      (int level, int finest_level,
                                      const amrex::Vector<amrex::Vector<amrex::MultiFab*> >& grad_phi,
-				     int is_new,
+                                     int is_new,
                                      int use_previous_phi_as_guess = 0);
-
-
-///
-/// Returns the volume weighted average of ``mf`` at the given level
-///
-/// @param level    index of AMR level
-/// @param mf       MultiFab to be averaged
-/// @param mask     boolean, should we mask finer levels?
-///
-  amrex::Real computeAvg    (int level, amrex::MultiFab* mf, bool mask=true);
 
 
 ///
@@ -232,10 +227,10 @@ public:
 /// @param cml_gphi     Vector of MultiFabs, computed minus level grad phi
 ///
   void create_comp_minus_level_grad_phi(int level,
-					amrex::MultiFab& comp_phi,
-					const amrex::Vector<amrex::MultiFab*>& comp_gphi,
-					amrex::MultiFab& cml_phi,
-					amrex::Vector<std::unique_ptr<amrex::MultiFab> >& cml_gphi);
+                                        amrex::MultiFab& comp_phi,
+                                        const amrex::Vector<amrex::MultiFab*>& comp_gphi,
+                                        amrex::MultiFab& cml_phi,
+                                        amrex::Vector<std::unique_ptr<amrex::MultiFab> >& cml_gphi);
 
 
 ///
@@ -268,6 +263,29 @@ public:
 ///
   void get_new_grav_vector(int level, amrex::MultiFab& grav_vector, amrex::Real time);
 
+///
+/// Test whether using the edge-based gradients
+/// to compute Div(Grad(Phi)) satisfies Lap(phi) = RHS
+///
+/// @param bx          box
+/// @param rhs         right-hand-side
+/// @param ecx         gradients wrt x
+/// @param ecy         gradients wrt y
+/// @param ecz         gradients wrt z
+/// @param coord_type  coordinate system
+
+  void test_residual (const amrex::Box& bx,
+                      amrex::Array4<amrex::Real> const& rhs,
+                      amrex::Array4<amrex::Real> const& ecx,
+#if AMREX_SPACEDIM >= 2
+                      amrex::Array4<amrex::Real> const& ecy,
+#endif
+#if AMREX_SPACEDIM == 3
+                      amrex::Array4<amrex::Real> const& ecz,
+#endif
+                      amrex::GpuArray<amrex::Real, AMREX_SPACEDIM> dx,
+                      amrex::GpuArray<amrex::Real, AMREX_SPACEDIM> problo,
+                      int coord_type);
 
 ///
 /// @param level
@@ -299,7 +317,7 @@ public:
 /// @param time         Current time
 /// @param radial_grav  Vector containing gravity in radial direction
 ///
-  void make_radial_gravity(int level, amrex::Real time, amrex::Vector<amrex::Real>& radial_grav);
+  void make_radial_gravity(int level, amrex::Real time, RealVector& radial_grav);
 
 ///
 /// Interpolate monopole gravitational field in the radial direction
@@ -308,7 +326,7 @@ public:
 /// @param radial_grav  Radial gravity
 /// @param grav_vector  Gravity vector
 ///
-  void interpolate_monopole_grav(int level, amrex::Vector<amrex::Real>& radial_grav, amrex::MultiFab& grav_vector);
+  void interpolate_monopole_grav(int level, RealVector& radial_grav, amrex::MultiFab& grav_vector);
 
 
 ///
@@ -318,6 +336,22 @@ public:
 /// @param phi      Gravitational potential
 ///
   void make_prescribed_grav(int level, amrex::Real time, amrex::MultiFab& grav, amrex::MultiFab& phi);
+
+///
+/// Integrate radially outward to find radial mass distribution
+///
+/// @param bx           Box
+/// @param u            Density (RHS of Poisson's equation)
+/// @param radial_mass  Radially integrated mass
+/// @param radial_vol   Radially integrated volume
+/// @param n1d          Number of radial points in the domain
+/// @param level        Level index
+///
+  void compute_radial_mass(const amrex::Box& bx,
+                           amrex::Array4<amrex::Real const> const u,
+                           RealVector& radial_mass,
+                           RealVector& radial_vol,
+                           int n1d, int level);
 
 ///
 /// Integrate radially outward to find radial gravitational potential
@@ -362,8 +396,6 @@ public:
 /// Make multigrid boundary conditions
 ///
   void make_mg_bc();
-
-protected:
 
 ///
 /// Pointers to amr,amrlevel.
@@ -423,18 +455,17 @@ protected:
 
   static int   test_solves;
   static amrex::Real  mass_offset;
-  static amrex::Vector< amrex::Vector<amrex::Real> > radial_grav_old;
-  static amrex::Vector< amrex::Vector<amrex::Real> > radial_grav_new;
-  static amrex::Vector< amrex::Vector<amrex::Real> > radial_mass;
-  static amrex::Vector< amrex::Vector<amrex::Real> > radial_vol;
+  amrex::Vector< RealVector > radial_grav_old;
+  amrex::Vector< RealVector > radial_grav_new;
+  amrex::Vector< RealVector > radial_mass;
+  amrex::Vector< RealVector > radial_vol;
 #ifdef GR_GRAV
-  static amrex::Vector< amrex::Vector<amrex::Real> > radial_pres;
+  amrex::Vector< RealVector > radial_pres;
 #endif
   static int   stencil_type;
 
   static amrex::Real max_radius_all_in_domain;
 
-#include "gravity_params.H"
 
 #if (BL_SPACEDIM < 3)
 
@@ -471,8 +502,6 @@ protected:
 /// @param point_mass   Mass of pointmass
 ///
     void add_pointmass_to_gravity (int level, amrex::MultiFab& phi, amrex::MultiFab& grav_vector, amrex::Real point_mass);
-
-private:
 
 ///
 /// Get the rhs
@@ -535,28 +564,22 @@ private:
                                      const amrex::Vector<amrex::MultiFab*>& res,
                                      amrex::Real time);
 
+
+public:
+
+  inline amrex::Real
+  get_const_grav() {
+    return gravity::const_grav;
+  }
+
+
 };
 
 ///
 /// @class GradPhiPhysBCFunct
 /// @brief A physical boundary condition function for grad phi
 ///
-class GradPhiPhysBCFunct
-    : public amrex::PhysBCFunctBase
-{
-public:
-    GradPhiPhysBCFunct ();
+using GradPhiPhysBCFunct = amrex::PhysBCFunctNoOp;
 
-///
-/// We should never need to actually fill physical ghost zones for
-/// grad phi, so this does nothing
-///
-/// @param mf       MultiFab
-/// @param dcomp    destonation component
-/// @param ncomp    Number of components
-/// @param time     Current time
-/// @param bccomp   Boundary conditions component
-///
-    virtual void FillBoundary (amrex::MultiFab& mf, int dcomp, int ncomp, amrex::Real time, int bccomp);
-};
+
 #endif
